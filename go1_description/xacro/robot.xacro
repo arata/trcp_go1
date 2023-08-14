@@ -30,12 +30,26 @@
 
     <link name="rslidar" />
     <joint name="rslidar_joint" type="fixed">
-      <origin rpy="0 0 0" xyz="0.1 0 0.07"/>       
-      <parent link="base"/>
+      <origin rpy="0 0 0" xyz="0.1 0 0.13"/>       
+      <parent link="base_link"/>
       <child link="rslidar"/>
     </joint>
 
-    <link name="base">
+    <link name="lidar" />
+    <joint name="lidar_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0.1 0 0.13"/>       
+      <parent link="base_link"/>
+      <child link="lidar"/>
+    </joint>    
+
+    <link name="velodyne" />
+    <joint name="velodyne_joint" type="fixed">
+      <origin rpy="0 0 0" xyz="0.1 0 0.13"/>       
+      <parent link="base_link"/>
+      <child link="velodyne"/>
+    </joint>    
+
+    <link name="base_link">
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
@@ -46,7 +60,7 @@
 
     <joint name="floating_base" type="fixed">
         <origin rpy="0 0 0" xyz="0 0 0"/>
-        <parent link="base"/>
+        <parent link="base_link"/>
         <child link="trunk"/>
     </joint>
 

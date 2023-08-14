@@ -15,6 +15,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/JointState.h>
+#include <sensor_msgs/Imu.h>
 
 // unitree lib
 #include <unitree_legged_msgs/HighCmd.h>
@@ -87,11 +88,13 @@ public:
     rec_data = nh_.createTimer(ros::Duration(0.1), &UnitreeRos::receiveDataFromRobot, this);
     pub_odom_timer = nh_.createTimer(ros::Duration(0.1), &UnitreeRos::publishOdometry, this);
     pub_joint_state_timer = nh_.createTimer(ros::Duration(0.1), &UnitreeRos::publishJointState, this);
+    pub_imu_timer = nh_.createTimer(ros::Duration(0.1), &UnitreeRos::publishImu, this);    
 
     pub_high = nh_.advertise<unitree_legged_msgs::HighState>("high_state", 1, this);
     pub_low = nh_.advertise<unitree_legged_msgs::LowState>("low_state", 1, this);
     pub_odom = nh_.advertise<nav_msgs::Odometry>("odom", 1, this);
-    pub_joint_state = nh_.advertise<sensor_msgs::JointState>("joint_states", 1, this);    
+    pub_joint_state = nh_.advertise<sensor_msgs::JointState>("joint_states", 1, this);
+    pub_imu = nh_.advertise<sensor_msgs::Imu>("imu_raw", 1, this);
 
   }
 
@@ -105,6 +108,7 @@ private:
   ros::Timer rec_data;
   ros::Timer pub_odom_timer;
   ros::Timer pub_joint_state_timer;
+  ros::Timer pub_imu_timer;
 
   // subscriber
   ros::Subscriber sub_cmd_vel;
@@ -114,6 +118,7 @@ private:
   ros::Publisher pub_high;
   ros::Publisher pub_low;
   ros::Publisher pub_joint_state;
+  ros::Publisher pub_imu;
 
   unitree_legged_msgs::HighState high_state_ros;
   unitree_legged_msgs::LowState low_state_ros;
@@ -129,7 +134,7 @@ private:
     odom_msg.header.seq = 0;
     odom_msg.header.stamp = ros::Time::now();
     odom_msg.header.frame_id = "odom";
-    odom_msg.child_frame_id = "base";
+    odom_msg.child_frame_id = "base_link";
     odom_msg.pose.pose.position.x = high_state_ros.position[0];
     odom_msg.pose.pose.position.y = high_state_ros.position[1];
     odom_msg.pose.pose.position.z = high_state_ros.position[2];
@@ -161,7 +166,7 @@ private:
     geometry_msgs::TransformStamped transformStamped;
     transformStamped.header.stamp = odom_msg.header.stamp;
     transformStamped.header.frame_id = "odom";
-    transformStamped.child_frame_id = "base";
+    transformStamped.child_frame_id = "base_link";
     transformStamped.transform.translation.x = odom_msg.pose.pose.position.x;
     transformStamped.transform.translation.y = odom_msg.pose.pose.position.y;
     transformStamped.transform.translation.z = odom_msg.pose.pose.position.z;
@@ -195,6 +200,29 @@ private:
     }
 
     pub_joint_state.publish(jointState);    
+  }
+
+  void publishImu(const ros::TimerEvent& e)
+  {
+    sensor_msgs::Imu imu;
+
+    imu.header.stamp = ros::Time::now();
+    imu.header.frame_id = "imu_link";
+
+    imu.orientation.x = high_state_ros.imu.quaternion[0];
+    imu.orientation.y = high_state_ros.imu.quaternion[1];
+    imu.orientation.z = high_state_ros.imu.quaternion[2];
+    imu.orientation.w = high_state_ros.imu.quaternion[3];
+    
+    imu.angular_velocity.x = high_state_ros.imu.gyroscope[0];
+    imu.angular_velocity.y = high_state_ros.imu.gyroscope[1];
+    imu.angular_velocity.z = high_state_ros.imu.gyroscope[2];
+
+    imu.linear_acceleration.x = high_state_ros.imu.accelerometer[0];
+    imu.linear_acceleration.y = high_state_ros.imu.accelerometer[1];
+    imu.linear_acceleration.z = high_state_ros.imu.accelerometer[2];    
+      
+    pub_imu.publish(imu);
   }
 
   void receiveDataFromRobot(const ros::TimerEvent& e)
