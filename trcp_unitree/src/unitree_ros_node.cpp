@@ -175,7 +175,7 @@ private:
     transformStamped.transform.rotation.z = q.z();
     transformStamped.transform.rotation.w = q.w();
 
-    dynamic_br_.sendTransform(transformStamped);
+    // dynamic_br_.sendTransform(transformStamped);
 
     // std::cout << "send tf" << std::endl;
   }
@@ -209,10 +209,10 @@ private:
     imu.header.stamp = ros::Time::now();
     imu.header.frame_id = "imu_link";
 
-    imu.orientation.x = high_state_ros.imu.quaternion[0];
-    imu.orientation.y = high_state_ros.imu.quaternion[1];
-    imu.orientation.z = high_state_ros.imu.quaternion[2];
-    imu.orientation.w = high_state_ros.imu.quaternion[3];
+    imu.orientation.x = high_state_ros.imu.quaternion[1];
+    imu.orientation.y = high_state_ros.imu.quaternion[2];
+    imu.orientation.z = high_state_ros.imu.quaternion[3];
+    imu.orientation.w = high_state_ros.imu.quaternion[0];
     
     imu.angular_velocity.x = high_state_ros.imu.gyroscope[0];
     imu.angular_velocity.y = high_state_ros.imu.gyroscope[1];
@@ -220,9 +220,14 @@ private:
 
     imu.linear_acceleration.x = high_state_ros.imu.accelerometer[0];
     imu.linear_acceleration.y = high_state_ros.imu.accelerometer[1];
-    imu.linear_acceleration.z = high_state_ros.imu.accelerometer[2];    
+    imu.linear_acceleration.z = high_state_ros.imu.accelerometer[2];
       
     pub_imu.publish(imu);
+
+    std::cout << "roll  : " << high_state_ros.imu.rpy[0] << std::endl;
+    std::cout << "pitch : " << high_state_ros.imu.rpy[1] << std::endl;
+    std::cout << "yaw   : " << high_state_ros.imu.rpy[2] << std::endl;
+    std::cout << "---------------" << std::endl;
   }
 
   void receiveDataFromRobot(const ros::TimerEvent& e)

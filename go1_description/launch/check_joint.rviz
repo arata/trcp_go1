@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /RobotModel1
+        - /TF1
         - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 523
@@ -376,7 +377,7 @@ Visualization Manager:
         RR_thigh_rotor:
           Value: false
         base_link:
-          Value: true
+          Value: false
         camera_chin:
           Value: false
         camera_face:
@@ -404,9 +405,9 @@ Visualization Manager:
         imu_link:
           Value: true
         lidar:
-          Value: true
+          Value: false
         rslidar:
-          Value: true
+          Value: false
         trunk:
           Value: false
         ultraSound_face:
@@ -416,7 +417,7 @@ Visualization Manager:
         ultraSound_right:
           Value: false
         velodyne:
-          Value: true
+          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
