@@ -1,7 +1,7 @@
 <launch>
 
   <node name="trcp_unitree" pkg="trcp_unitree" type="unitree_ros_node"  respawn="true" output="screen"/>
-  <include file="$(find go1_description)/launch/go1_rviz.launch"/>
+  <include file="$(find trcp_go1_description)/launch/go1_rviz.launch"/>
   
   <include file="$(find rslidar_sdk)/launch/start.launch"/>
   <node name="rslidar_laserscan" pkg="rslidar_laserscan" type="rslidar_laserscan_node"  respawn="true" output="screen"/>
